@@ -8,15 +8,19 @@ const imgUploadRoute = require('./routes/upload-route')
 const app = express()
 const port = process.env.PORT
 const corsOption = {
-    origin: ['*', 'https://need.co.th','https://need-shopping.vercel.app/'],
-}
-
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }
 app.use(cors(corsOption))
+app.use('*' , cors(corsOption))
+
 app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
-app.options('/api/delpromotionimgs/:filename', cors())
+
 app.use('/api', imgUploadRoute)
 
 app.get('/api/hi', ()=>{

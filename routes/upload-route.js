@@ -1,12 +1,29 @@
 const express = require("express");
-const { promotionImg , uploadImg , getImg, provide_heroImg} = require("../controllers/promotions-imgU");
+const {
+  heroImg,
+  uploadImg,
+  getImg,
+  provide_heroImg,
+  promotionContent,
+  getPromotionimags,
+  deleteImg,
+  deletePromotionImg,
+  deleteImgs,
+} = require("../controllers/promotions-imgU");
 
 const router = express.Router();
 
-router.post('/upload' , uploadImg)
-router.get('/imgs' , getImg)
-router.post('/heroupload' , promotionImg)
-router.get('/heroimgs' , provide_heroImg)
+router.post("/upload", uploadImg); //originals
+router.get("/imgs", getImg); //originals
+router.delete('/deleteImg/:filename' , deleteImg) //originals
+
+router.post("/heroupload", heroImg);
+router.get("/heroimgs", provide_heroImg);
+router.delete("/herodelimgs" , deleteImgs)
+
+router.post("/promotions", promotionContent);
+router.get("/getpromotionimgs", getPromotionimags);
+router.delete('/delpromotionimgs/:filename',deletePromotionImg)
 
 
 module.exports = router;

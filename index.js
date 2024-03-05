@@ -2,15 +2,17 @@ const express = require('express')
 const { uploadImg , getImg } = require('./routes/upload-route')
 const core = require('cors')
 const path = require('path')
+require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
 
 const app = express()
-const port = 5050
+const port = process.env.PORT
 const corsOption = {
     origin : '*'
 }
 
 app.use(core(corsOption))
+app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 

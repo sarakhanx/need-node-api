@@ -138,7 +138,7 @@ exports.deletePromotionImg = (req , res ) =>{
   })
 }
 
-exports.deleteImgs =  (err) => {
+exports.deleteImgs =  (req , res) => {
   if(!req.body || !req.body.filename){
     return res.status(400).json({message:"Filename not provided in request body"})
   }

@@ -16,7 +16,7 @@ app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
-app.use('/api', imgUploadRoute)
+app.use('/api',cors(), imgUploadRoute)
 
 app.get('/api/hi', ()=>{
     console.log("hi folks its' amp! ")});

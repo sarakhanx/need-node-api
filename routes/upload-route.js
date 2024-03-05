@@ -20,11 +20,10 @@ router.delete('/deleteImg/:filename' , deleteImg) //originals
 
 router.post("/heroupload", heroImg);
 router.get("/heroimgs", provide_heroImg);
-router.delete("/herodelimgs", deleteImgs)
+router.delete("/herodelimgs/:filename", deleteImgs)
 
 router.post("/promotions", promotionContent);
 router.get("/getpromotionimgs", getPromotionimags)
-
 router.delete('/delpromotionimgs/:filename',deletePromotionImg)
 
 

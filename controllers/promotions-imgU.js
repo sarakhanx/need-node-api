@@ -150,6 +150,6 @@ exports.deleteImgs =  (err) => {
     if(err){
       return res.status(400).json({message:"Something went wrong"},err)
     }
-    res.status().json({message:"Deleted image succesesfully !!"})
+    res.status(200).json({message:"Deleted image succesesfully !!"})
   })
 }

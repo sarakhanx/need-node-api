@@ -12,7 +12,7 @@ const corsOption = {
     "origin": "*",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     "preflightContinue": false,
-    "optionsSuccessStatus": 204,
+    "optionsSuccessStatus": 200,
     allowedHeaders: ['Content-Type', 'Authorization']
   }
 app.use(cors(corsOption))

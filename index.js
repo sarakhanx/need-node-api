@@ -6,6 +6,7 @@ require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
 
 const app = express()
+app.use(express.json())
 const port = process.env.PORT
 const corsOption = {
     "origin": "*",
@@ -17,7 +18,7 @@ const corsOption = {
 app.use(cors(corsOption))
 app.use('*' , cors(corsOption))
 
-app.use(express.json())
+
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 

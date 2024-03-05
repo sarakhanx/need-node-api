@@ -8,7 +8,8 @@ const imgUploadRoute = require('./routes/upload-route')
 const app = express()
 const port = process.env.PORT
 const corsOption = {
-    origin : '*'
+    origin : '*',
+    origin: 'https://need.co.th',
 }
 
 app.use(core(corsOption))

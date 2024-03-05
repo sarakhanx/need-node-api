@@ -146,7 +146,7 @@ exports.deleteImgs =  (err) => {
   const {filename} = req.body
   const filePath = path.join(`${assetsPath}/hero-img` , filename);
 
-  fs.unlink(filename , (err)=>{
+  fs.unlink(filePath , (err)=>{
     if(err){
       return res.status(400).json({message:"Something went wrong"},err)
     }

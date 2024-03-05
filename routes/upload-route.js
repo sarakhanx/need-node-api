@@ -23,8 +23,8 @@ router.get("/heroimgs", provide_heroImg);
 router.delete("/herodelimgs" ,cors() , deleteImgs)
 
 router.post("/promotions", promotionContent);
-router.get("/getpromotionimgs", getPromotionimags);
-app.options('/delpromotionimgs/:filename', cors())
+router.get("/getpromotionimgs", getPromotionimags)
+
 router.delete('/delpromotionimgs/:filename',cors(),deletePromotionImg)
 
 

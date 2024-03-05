@@ -16,6 +16,7 @@ app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
+app.options('/api/delpromotionimgs/:filename', cors())
 app.use('/api', imgUploadRoute)
 
 app.get('/api/hi', ()=>{

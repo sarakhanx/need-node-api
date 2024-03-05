@@ -10,6 +10,7 @@ const {
   deletePromotionImg,
   deleteImgs,
 } = require("../controllers/promotions-imgU");
+const cors = require("cors")
 
 const router = express.Router();
 
@@ -19,11 +20,11 @@ router.delete('/deleteImg/:filename' , deleteImg) //originals
 
 router.post("/heroupload", heroImg);
 router.get("/heroimgs", provide_heroImg);
-router.delete("/herodelimgs" , deleteImgs)
+router.delete("/herodelimgs" ,cors() , deleteImgs)
 
 router.post("/promotions", promotionContent);
 router.get("/getpromotionimgs", getPromotionimags);
-router.delete('/delpromotionimgs/:filename',deletePromotionImg)
+router.delete('/delpromotionimgs/:filename',cors(),deletePromotionImg)
 
 
 module.exports = router;

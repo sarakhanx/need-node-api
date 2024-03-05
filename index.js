@@ -1,6 +1,6 @@
 const express = require('express')
 const { uploadImg , getImg } = require('./routes/upload-route')
-const core = require('cors')
+const cors = require('cors')
 const path = require('path')
 require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
@@ -11,12 +11,12 @@ const corsOption = {
     origin: ['*', 'https://need.co.th','https://need-shopping.vercel.app/'],
 }
 
-app.use(core(corsOption))
+app.use(cors(corsOption))
 app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
-app.use('/api',cors(), imgUploadRoute)
+app.use('/api', imgUploadRoute)
 
 app.get('/api/hi', ()=>{
     console.log("hi folks its' amp! ")});

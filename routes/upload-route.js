@@ -24,6 +24,7 @@ router.delete("/herodelimgs" ,cors() , deleteImgs)
 
 router.post("/promotions", promotionContent);
 router.get("/getpromotionimgs", getPromotionimags);
+app.options('/delpromotionimgs/:filename', cors())
 router.delete('/delpromotionimgs/:filename',cors(),deletePromotionImg)
 
 

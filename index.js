@@ -4,10 +4,18 @@ const cors = require('cors')
 const path = require('path')
 require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
+const bodyParser = require("body-parser");
+const db = require('./db.config/mariadb.config')
 
+const port = process.env.PORT
+
+
+// SECTION : middleware
 const app = express()
 app.use(express.json())
-const port = process.env.PORT
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
 const corsOption = {
     "origin": "*",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",

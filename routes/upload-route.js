@@ -9,14 +9,19 @@ const {
   deleteImg,
   deletePromotionImg,
   deleteImgs,
+  getImgAndText,
+  uploadManyFiles,
+  getManyFiles,
 } = require("../controllers/promotions-imgU");
-const cors = require("cors");
 
 const router = express.Router();
 
 router.post("/upload", uploadImg); //originals
+router.post('/uploadmanyfiles',uploadManyFiles)
+router.get('/getmanyfiles/:text1',getManyFiles)
 router.get("/imgs", getImg); //originals
 router.delete("/deleteImg/:filename", deleteImg); //originals
+router.get("/getdata/:filename",getImgAndText) //originals
 
 router.post("/heroupload", heroImg);
 router.get("/heroimgs", provide_heroImg);

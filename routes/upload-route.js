@@ -13,6 +13,10 @@ const {
   uploadManyFiles,
   getManyFiles,
 } = require("../controllers/promotions-imgU");
+const {
+  getProductsFromcate,
+  productUpload,
+} = require('../controllers/getCategories')
 
 const router = express.Router();
 
@@ -30,5 +34,12 @@ router.delete("/herodelimgs/:filename", deleteImgs);
 router.post("/promotions", promotionContent);
 router.get("/getpromotionimgs", getPromotionimags);
 router.delete("/delpromotionimgs/:filename", deletePromotionImg);
+
+
+// SECTION : GET PRODUCTS FROM CATE
+router.get('/getProductsFromcate/:category',getProductsFromcate)
+router.post('/uploadProduct',productUpload)
+
+
 
 module.exports = router;

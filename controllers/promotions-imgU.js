@@ -72,8 +72,6 @@ exports.uploadManyFiles = (req, res) => {
     });
   });
 };
-
-
 exports.getImgAndText = async (req, res) => {
   const imgreq = await req.params.filename;
   let conn;
@@ -146,8 +144,6 @@ exports.getManyFiles = async (req, res) => {
     if (conn) conn.end();
   }
 };
-
-
 exports.getImg = (req, res) => {
   fs.readdir(assetsPath, (err, files) => {
     if (err) {
@@ -164,7 +160,6 @@ exports.getImg = (req, res) => {
     res.json({ images: imageUrls });
   });
 };
-
 exports.heroImg = (req, res) => {
   heroImgUpload.single("file")(req, res, (err) => {
     if (err) {
@@ -180,7 +175,6 @@ exports.heroImg = (req, res) => {
     });
   });
 };
-
 exports.provide_heroImg = (req, res) => {
   fs.readdir(`${assetsPath}/hero-img`, (err, files) => {
     if (err) {
@@ -197,7 +191,6 @@ exports.provide_heroImg = (req, res) => {
     res.json({ images: imageUrls });
   });
 };
-
 exports.promotionContent = (req, res) => {
   // res.json({message:"working"}).status(200)
   promotionsupload.single("file")(req, res, (err) => {
@@ -213,7 +206,6 @@ exports.promotionContent = (req, res) => {
     });
   });
 };
-
 exports.getPromotionimags = (req, res) => {
   fs.readdir(`${assetsPath}/promotions-img`, (err, files) => {
     if (err) {
@@ -234,7 +226,6 @@ exports.getPromotionimags = (req, res) => {
     res.json({ images: imageUrls }); // res out in array by array name is 'images'
   });
 };
-
 //SECTION - Delete API
 exports.deleteImg = (req, res) => {
   if (!req.body || !req.body.filename) {

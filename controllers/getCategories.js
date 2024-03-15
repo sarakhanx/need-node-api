@@ -94,7 +94,7 @@ exports.getProductsFromcate = async (req, res) => {
     }
 };
 exports.productUpload = (req , res) =>{
-    upload.array("files" , 5)(req , res ,(error)=> {
+    upload.array("files" , 5)(req , res , async (error)=> {
         if(error){
             console.log(err)
             return res.status(400).json({error : error.message})
@@ -105,9 +105,17 @@ exports.productUpload = (req , res) =>{
         }
         const {title , description  ,size , colors , weight , category_id} = req.body
         const categoryIdAsNumber = parseInt(category_id, 10);
+        if(!categoryIdAsNumber){
+            console.log("category id is not a number")
+            return res.status(400).json({error : "Category id is not a number"})
+        }
+        const weightAsDecimal = parseFloat(weight);
+        if (isNaN(weightAsDecimal)) {
+            return res.status(400).json({ error: "Invalid weight" });
+        }
         const filenames = req.files.map(file =>file.filename)
         const sqlQuery = "INSERT INTO products (title , description , size , colors , weight , category_id , image1, image2 ,image3, image4, image5) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        pool.query(sqlQuery,[title , description  ,size , colors , weight , categoryIdAsNumber , filenames[0] , filenames[1] , filenames[2] , filenames[3] , filenames[4]] , (dbErr , result)=>{
+      await  pool.query(sqlQuery,[title , description  ,size , colors , weightAsDecimal , categoryIdAsNumber , filenames[0] , filenames[1] , filenames[2] , filenames[3] , filenames[4]] , (dbErr , result)=>{
             if(dbErr){
                 console.log("An error ocurred" , dbErr)
                 return res.status(500).json({error : "An error ocurred"})
@@ -121,8 +129,46 @@ exports.productUpload = (req , res) =>{
             description : description,
             size : size,
             colors : colors,
-            weight : weight,
+            weight : weightAsDecimal,
             category_id : categoryIdAsNumber,
         })
     } )
+}
+exports.getSingleProduct = async (req , res)=>{
+    const params = req.params.id
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const data = await conn.query(
+            `SELECT * FROM products WHERE id = ?`,
+            [params]
+        );
+       if (data.length > 0) {
+            const resData = [];
+            data.forEach((product)=>{
+                const imgUrls = [];
+                for (let i = 1; i <= 5; i++) {
+                    const imgPath = path.join(__dirname, `../assets/${product[`image${i}`]}`);
+                    if (fs.existsSync(imgPath)) {
+                        imgUrls.push(`/assets/${product[`image${i}`]}`);
+                    }
+                }
+                if (imgUrls.length > 0) {
+                    resData.push({...product , imgUrls});
+                }
+            });
+            if(resData.length>0){
+                res.json({data: resData});
+            }else{
+                res.status(400).json({error:"No image found from product"});
+            }
+        } else {
+            res.status(400).json({ error: "No products found for the category" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "An error occurred", error });
+    } finally {
+        if (conn) conn.end();
+    }
 }

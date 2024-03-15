@@ -16,6 +16,7 @@ const {
 const {
   getProductsFromcate,
   productUpload,
+  getSingleProduct,
 } = require('../controllers/getCategories')
 
 const router = express.Router();
@@ -39,6 +40,7 @@ router.delete("/delpromotionimgs/:filename", deletePromotionImg);
 // SECTION : GET PRODUCTS FROM CATE
 router.get('/getProductsFromcate/:category',getProductsFromcate)
 router.post('/uploadProduct',productUpload)
+router.get('/getsingleproduct/:id',getSingleProduct)
 
 
 

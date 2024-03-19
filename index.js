@@ -1,11 +1,10 @@
 const express = require('express')
-const { uploadImg , getImg } = require('./routes/upload-route')
 const cors = require('cors')
 const path = require('path')
 require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
 const bodyParser = require("body-parser");
-const db = require('./db.config/mariadb.config')
+const blogRoute = require('./routes/blog-routes')
 
 const port = process.env.PORT
 
@@ -31,7 +30,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
 
-app.use('/api', imgUploadRoute)
+app.use('/api', imgUploadRoute , blogRoute)
 
 app.get('/api/hi', ()=>{
     console.log("hi folks its' amp! ")});

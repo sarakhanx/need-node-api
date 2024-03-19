@@ -28,8 +28,19 @@ const promotionsupload = multer.diskStorage({
   }
 })
 
+const blogFileUpload = multer.diskStorage({
+  destination: function(req , res , cb){
+    cb(null, "assets/blog-img")
+  },
+  filename : function (req , file , cb) {
+    cb(null, Date.now() + "-" + file.originalname)
+  }
+})
+
+
 module.exports = {
   upload: multer({ storage }), //original fellow docs
   heroImgUpload: multer({ storage: heroupload }), //upload to hero-img
-  promotionsupload : multer({ storage : promotionsupload })
+  promotionsupload : multer({ storage : promotionsupload }),
+  blogFeatureImageUpload : multer({ storage : blogFileUpload })
 };

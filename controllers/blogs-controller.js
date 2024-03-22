@@ -2,6 +2,9 @@ const { blogFeatureImageUpload } = require("../libs/multerConfig");
 const path = require("path");
 const fs = require("fs");
 const pool = require("../db.config/mariadb.config");
+const multer = require("multer")
+
+const updatedData = multer()
 
 exports.blogFeatureImg = (req, res) => {
   blogFeatureImageUpload.single("file")(req, res, (err) => {
@@ -45,12 +48,12 @@ exports.getBlogFeatureImg = async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const getData = await conn.query(`SELECT * FROM Blogs WHERE slug = ?`, [
+    const data = await conn.query(`SELECT * FROM Blogs WHERE slug = ?`, [
       params,
     ]);
 
-    if (getData.length > 0) {
-    const featureImgData = getData[0];
+    if (data.length > 0) {
+    const featureImgData = data[0];
     const featureImgPath = path.join(
         __dirname,
         `../assets/blog-img/${featureImgData.imgUrl}`
@@ -58,7 +61,7 @@ exports.getBlogFeatureImg = async (req, res) => {
       if (fs.existsSync(featureImgPath)) {
         const imgPath = `/assets/blog-img/${featureImgData.imgUrl}`;
         res.setHeader("Content-Type", "application/json");
-        res.json({ getData: { ...featureImgData, imgPath } });
+        res.json({ data: { ...featureImgData, imgPath } });
       } else {
         res.status(400).json("feature images not found");
         console.log(featureImgData)
@@ -69,6 +72,92 @@ exports.getBlogFeatureImg = async (req, res) => {
   } catch (error) {
     console.log("something went wrongs from catch in API", error);
   } finally {
-    if (conn) conn.end();
+    if(conn) conn.end();
   }
+};
+exports.getAllBlogs = async (req , res)=>{
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const getAllBlogs = await conn.query(`SELECT * FROM Blogs`);
+    const blogWithData = [];
+    for (const blog of getAllBlogs) {
+      const imgPath = path.join(__dirname, `../assets/blog-img/${blog.imgUrl}`);
+      if(fs.existsSync(imgPath)){
+        const imgUrl = `/assets/blog-img/${blog.imgUrl}`;
+        blogWithData.push({...blog , imgUrl});
+      }else{
+        res.status(400).json({ error: "No image found" });
+      }
+    }
+
+    res.status(200).json({data: blogWithData})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:"An error occured " , error})
+  }finally{
+    if(conn) conn.end();
+  }
+}
+exports.deleteBlog =  async (req, res) => {
+  const slug = req.params.slug;
+  let conn;
+  try {
+    // Check if the blog post exists in the database
+    conn = await pool.getConnection();
+    const blog= await conn.query('SELECT * FROM Blogs WHERE slug = ?', [slug]);
+    if (!blog.length) {
+      return res.status(404).json({ error: 'Blog post not found' });
+    }
+
+    // Delete the blog post from the database
+    await conn.query('DELETE FROM Blogs WHERE slug = ?', [slug]);
+
+    // Delete the associated image file from the server
+    const imagePath = path.join(__dirname, `../assets/blog-img/${blog[0].imgUrl}`);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    // Send success response
+    res.status(200).json({ message: 'Blog post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting blog post:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the blog post' });
+  }
+};
+exports.updateBlogContent = async (req, res) => {
+  updatedData.none()(req,res,async (err)=>{
+    if(err){
+      console.log(err)
+      return res.status(500).json({ error: 'An error occurred while updating the blog post' });
+    }
+  
+  const { title, content, author } = req.body;
+  console.log(req.header)
+  console.log(req.body)
+  if (!title || !content || !author) {
+    return res.status(400).json({ error: 'Missing required fields: title, content, author' });
+  }
+  const slug = req.params.slug
+ 
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    // Check if the blog post exists in the database
+    const existingBlog = await conn.query('SELECT * FROM Blogs WHERE slug = ?', [slug]);
+    if (!existingBlog.length) {
+      return res.status(404).json({ error: 'Blog post not found' });
+    }
+
+    // Update the blog post in the database
+    const updateBlogQuery = 'UPDATE Blogs SET title = ?, content = ?, author = ? WHERE slug = ?';
+    await conn.query(updateBlogQuery, [title, content, author , slug]);
+
+    res.status(200).json({ message: 'Blog post updated successfully' });
+  } catch (error) {
+    console.error('Error updating blog post:', error);
+    res.status(500).json({ error: 'An error occurred while updating the blog post' });
+  }
+})
 };

@@ -75,30 +75,37 @@ exports.getBlogFeatureImg = async (req, res) => {
     if(conn) conn.end();
   }
 };
-exports.getAllBlogs = async (req , res)=>{
+exports.getAllBlogs = async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
     const getAllBlogs = await conn.query(`SELECT * FROM Blogs`);
     const blogWithData = [];
-    for (const blog of getAllBlogs) {
+
+    // Asynchronously check image existence for each blog
+    await Promise.all(getAllBlogs.map(async (blog) => {
       const imgPath = path.join(__dirname, `../assets/blog-img/${blog.imgUrl}`);
-      if(fs.existsSync(imgPath)){
+      if (fs.existsSync(imgPath)) {
         const imgUrl = `/assets/blog-img/${blog.imgUrl}`;
-        blogWithData.push({...blog , imgUrl});
-      }else{
-        res.status(400).json({ error: "No image found" });
+        blogWithData.push({ ...blog, imgUrl });
       }
+    }));
+
+    // If no images were found for any blog, return an error response
+    if (blogWithData.length === 0) {
+      return res.status(400).json({ error: "No images found for any blog" });
     }
 
-    res.status(200).json({data: blogWithData})
+    // Send the data as a JSON response
+    res.status(200).json({ data: blogWithData });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({message:"An error occured " , error})
-  }finally{
-    if(conn) conn.end();
+    console.error("An error occurred:", error);
+    res.status(500).json({ message: "An error occurred", error });
+  } finally {
+    if (conn) conn.end(); // Release the connection back to the pool
   }
-}
+};
+
 exports.deleteBlog =  async (req, res) => {
   const slug = req.params.slug;
   let conn;

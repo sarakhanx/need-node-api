@@ -45,13 +45,16 @@ exports.blogFeatureImg = (req, res) => {
 exports.getAllBlogsPagination = async (req, res) => {
   let conn;
   const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
-  const pageSize = parseInt(req.query.pageSize) || 1; // Default to 10 items per page
+  const pageSize = parseInt(req.query.pageSize) || 10; // Default to 10 items per page
 
   try {
     conn = await pool.getConnection();
 
     // Get the total count of blogs
     const [{ totalCount }] = await conn.query('SELECT COUNT(*) AS totalCount FROM Blogs');
+    
+    // Convert totalCount to a number if it is a BigInt
+    const totalCountNumber = Number(totalCount);
 
     // Calculate offset for pagination
     const offset = (page - 1) * pageSize;
@@ -75,13 +78,13 @@ exports.getAllBlogsPagination = async (req, res) => {
     }
 
     // Calculate total pages
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = Math.ceil(totalCountNumber / pageSize);
 
     // Send the data as a JSON response with pagination metadata
     res.status(200).json({
       data: blogWithData,
       pagination: {
-        totalItems: totalCount,
+        totalItems: totalCountNumber,
         totalPages: totalPages,
         currentPage: page,
         pageSize: pageSize
@@ -94,6 +97,7 @@ exports.getAllBlogsPagination = async (req, res) => {
     if (conn) conn.end(); // Release the connection back to the pool
   }
 };
+
 
 
 exports.getBlogFeatureImg = async (req, res) => {

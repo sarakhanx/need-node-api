@@ -42,6 +42,59 @@ exports.blogFeatureImg = (req, res) => {
     });
   });
 };
+exports.getAllBlogsPagination = async (req, res) => {
+  let conn;
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+  const pageSize = parseInt(req.query.pageSize) || 1; // Default to 10 items per page
+
+  try {
+    conn = await pool.getConnection();
+
+    // Get the total count of blogs
+    const [{ totalCount }] = await conn.query('SELECT COUNT(*) AS totalCount FROM Blogs');
+
+    // Calculate offset for pagination
+    const offset = (page - 1) * pageSize;
+
+    // Fetch paginated blogs
+    const getAllBlogs = await conn.query(`SELECT * FROM Blogs LIMIT ? OFFSET ?`, [pageSize, offset]);
+    const blogWithData = [];
+
+    // Asynchronously check image existence for each blog
+    await Promise.all(getAllBlogs.map(async (blog) => {
+      const imgPath = path.join(__dirname, `../assets/blog-img/${blog.imgUrl}`);
+      if (fs.existsSync(imgPath)) {
+        const imgUrl = `/assets/blog-img/${blog.imgUrl}`;
+        blogWithData.push({ ...blog, imgUrl });
+      }
+    }));
+
+    // If no images were found for any blog, return an error response
+    if (blogWithData.length === 0) {
+      return res.status(400).json({ error: "No images found for any blog" });
+    }
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    // Send the data as a JSON response with pagination metadata
+    res.status(200).json({
+      data: blogWithData,
+      pagination: {
+        totalItems: totalCount,
+        totalPages: totalPages,
+        currentPage: page,
+        pageSize: pageSize
+      }
+    });
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).json({ message: "An error occurred", error });
+  } finally {
+    if (conn) conn.end(); // Release the connection back to the pool
+  }
+};
+
 
 exports.getBlogFeatureImg = async (req, res) => {
   const params = req.params.slug;
@@ -168,3 +221,4 @@ exports.updateBlogContent = async (req, res) => {
   }
 })
 };
+

@@ -13,11 +13,7 @@ const {
   uploadManyFiles,
   getManyFiles,
 } = require("../controllers/promotions-imgU");
-const {
-  getProductsFromcate,
-  productUpload,
-  getSingleProduct,
-} = require('../controllers/getCategories')
+const product = require('../controllers/getCategories')
 
 const router = express.Router();
 
@@ -27,6 +23,7 @@ router.get('/getmanyfiles/:text1',getManyFiles)
 router.get("/imgs", getImg); //originals
 router.delete("/deleteImg/:filename", deleteImg); //originals
 router.get("/getdata/:filename",getImgAndText) //originals
+
 
 router.post("/heroupload", heroImg);
 router.get("/heroimgs", provide_heroImg);
@@ -38,9 +35,11 @@ router.delete("/delpromotionimgs/:filename", deletePromotionImg);
 
 
 // SECTION : GET PRODUCTS FROM CATE
-router.get('/getProductsFromcate/:category',getProductsFromcate)
-router.post('/uploadProduct',productUpload)
-router.get('/getsingleproduct/:id',getSingleProduct)
+router.get('/getProductsFromcate/:category',product.getProductsFromcate)
+router.post('/uploadProduct',product.productUpload)
+router.get('/getsingleproduct/:id',product.getSingleProduct)
+router.delete("/product-delete/:id",product.productDelete)
+router.get("/products-cate/:category",product.paginationProducts)
 
 
 

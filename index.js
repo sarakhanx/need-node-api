@@ -5,6 +5,7 @@ require('dotenv').config();
 const imgUploadRoute = require('./routes/upload-route')
 const bodyParser = require("body-parser");
 const blogRoute = require('./routes/blog-routes')
+const perksRoute = require('./routes/perk-routes')
 
 const port = process.env.PORT
 
@@ -30,7 +31,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets/hero-img', express.static(path.join(__dirname, 'assets/hero-img')));
 
 
-app.use('/api', imgUploadRoute , blogRoute)
+app.use('/api', imgUploadRoute , blogRoute , perksRoute)
 
 app.get('/api/hi', ()=>{
     console.log("hi folks its' amp! ")});

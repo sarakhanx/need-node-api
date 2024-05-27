@@ -165,7 +165,7 @@ exports.productDelete = async (req, res) => {
 exports.paginationProducts = async (req, res) => {
     const params = req.params.category;
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 1;
+    const pageSize = 10;
 
     let conn;
     try {

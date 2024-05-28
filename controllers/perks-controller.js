@@ -23,6 +23,8 @@ try {
     return res.status(200).json({message : "data inserted successfully",data})
 } catch (error) {
     res.status(500).json({ error: "An error occurred", error });
+}finally{
+    if(conn) conn.end()
 }
 }
 
@@ -42,6 +44,8 @@ exports.getYoutubePlaylist = async (req, res) => {
         return res.status(200).json({ youtubePlaylist: processedRows });
     } catch (error) {
         res.status(500).json({ error: "An error occurred", error });
+    }finally{
+        if(conn) conn.end()
     }
 };
 
@@ -70,6 +74,8 @@ try {
     return res.status(200).json({message : "data updated successfully",data})
 } catch (error) {
     res.status(500).json({ error: "An error occurred", error });
+}finally{
+    if(conn) conn.end()
 }
 }
 
@@ -83,5 +89,7 @@ exports.deleteYoutubePlaylist = async (req, res) => {
         return res.status(200).json({ message : "data deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: "An error occurred", error });
+    }finally{
+        if(conn) conn.end()
     }
 }

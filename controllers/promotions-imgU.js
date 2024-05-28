@@ -8,7 +8,6 @@ const fs = require("fs");
 const pool = require("../db.config/mariadb.config");
 
 const assetsPath = path.join(__dirname, "../assets"); //for loop all path in assets directory
-const dirMediaRoot = path.join(__dirname, "..");
 exports.uploadImg = (req, res) => {
   upload.single("file")(req, res, (err) => {
     if (err) {

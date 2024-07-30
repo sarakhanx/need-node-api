@@ -6,6 +6,7 @@ const imgUploadRoute = require('./routes/upload-route')
 const bodyParser = require("body-parser");
 const blogRoute = require('./routes/blog-routes')
 const perksRoute = require('./routes/perk-routes')
+const pool = require("./db.config/mariadb.config");
 
 const port = process.env.PORT
 
@@ -36,6 +37,14 @@ app.use('/api', imgUploadRoute , blogRoute , perksRoute)
 app.get('/api/hi', ()=>{
     console.log("hi folks its' amp! ")});
 
-app.listen(port , () => {
+
+
+app.listen(port , async ()  => {
+    conn = await pool.getConnection();
+    if(!conn){
+        console.log("Database is not connected")
+    }else{
+        console.log("Database is connected")
+    }
     console.log("app is running on port" + port)
 })

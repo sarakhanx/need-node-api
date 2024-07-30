@@ -40,6 +40,8 @@ router.post('/uploadProduct',product.productUpload)
 router.get('/getsingleproduct/:id',product.getSingleProduct)
 router.delete("/product-delete/:id",product.productDelete)
 router.get("/products-cate/:category",product.paginationProducts)
+router.get("/products",product.AllProductListHundred)
+router.put('/product-update/:params',product.editProduct)
 
 
 
